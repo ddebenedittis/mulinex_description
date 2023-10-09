@@ -58,12 +58,6 @@
         <gazebo reference="base_link">
             <material>Gazebo/White</material>
         </gazebo>
-        <gazebo>
-            <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-                <parameters>$(find solo12_sim)/config/control_PD.yaml</parameters>
-                <!-- <parameters>$(find solo12_sim)/config/control_step_0.yaml</parameters>    -->
-            </plugin>
-        </gazebo>
 
         <ros2_control name="GazeboSystem" type="system">
             <hardware>
@@ -319,7 +313,7 @@
 
     </xacro:if>
     <xacro:unless value="${use_gazebo}">
-        <ros2_control name="SOLO12_WB_Interface" type="system">
+        <!-- <ros2_control name="SOLO12_WB_Interface" type="system">
             <hardware>
                 <plugin>solo12_interface/SOLO12_WB_Interface</plugin>
                 <param name="timeout">100</param>
@@ -330,7 +324,7 @@
                 <param name="Kv_H">0.0</param>
                 <param name="I_saturation">12.0</param>
             </hardware>
-        </ros2_control>
+        </ros2_control> -->
         <!--<ros2_control name="SOLO12_Leg_Interface" type="system">
             <hardware>
                 <plugin>solo12_interface/SOLO12_Leg_Interface</plugin>
