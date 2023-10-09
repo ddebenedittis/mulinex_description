@@ -4,7 +4,7 @@ from ament_index_python.packages import get_package_share_path
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import Command,LaunchConfiguration
+from launch.substitutions import Command,LaunchConfiguration,PathJoinSubstitution
 from launch.conditions import IfCondition,UnlessCondition
 
 from launch_ros.actions import Node
@@ -16,8 +16,8 @@ def generate_launch_description():
     mulinex_robot_path = get_package_share_path("mulinex_description")
     mulinex_robot_path = os.path.join(mulinex_robot_path,"urdf", "mulinex.xacro") 
     # #path for rviz settings
-    # rviz_config_path = get_package_share_path("mulinex_robot_description")
-    # rviz_config_path = os.path.join(rviz_config_path, "rviz/mymulinex_prova_leg.rviz")
+    rviz_config_path = get_package_share_path("mulinex_description")
+    rviz_config_path = os.path.join(rviz_config_path, "rviz", "config.rviz")
 
     #declaration argument of launch
     use_gui = DeclareLaunchArgument(
@@ -66,7 +66,7 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz',
         output= 'screen',
-        #arguments=['-d', LaunchConfiguration('rviz_config')],
+        arguments=['-d', rviz_config_path],
     )
 
 
