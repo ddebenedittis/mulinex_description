@@ -197,21 +197,25 @@
         <xacro:if value="${prefix == 'LF'}">
             <xacro:property name="hip_to_upper_leg_xyz" value="${HAA_2_HFE_x} ${HAA_2_HFE_y} 0" />
             <xacro:property name="hip_to_upper_leg_rpy" value="0 0 0" />
+            <xacro:property name="axis" value="0 1 0"/>
         </xacro:if>
         <xacro:if
             value="${prefix == 'LH'}">
             <xacro:property name="hip_to_upper_leg_xyz" value="${-HAA_2_HFE_x} ${HAA_2_HFE_y} 0" />
             <xacro:property name="hip_to_upper_leg_rpy" value="0 0 0" />
+            <xacro:property name="axis" value="0 1 0" />
         </xacro:if>
         <xacro:if
             value="${prefix == 'RF'}">
             <xacro:property name="hip_to_upper_leg_xyz" value="${HAA_2_HFE_x} ${-HAA_2_HFE_y} 0" />
             <xacro:property name="hip_to_upper_leg_rpy" value="0 0 0" />
+            <xacro:property name="axis" value="0 -1 0" />
         </xacro:if>
         <xacro:if
             value="${prefix == 'RH'}">
             <xacro:property name="hip_to_upper_leg_xyz" value="${-HAA_2_HFE_x} ${-HAA_2_HFE_y} 0" />
             <xacro:property name="hip_to_upper_leg_rpy" value="0 0 0" />
+            <xacro:property name="axis" value="0 -1 0" />
         </xacro:if>
         <xacro:property name="upper_to_lower_leg_rpy" value="0 0 0" />
 
@@ -220,7 +224,7 @@
             <parent link="${jnt_pref}${prefix}_SHOULDER" />
             <child link="${jnt_pref}${prefix}_UPPER_LEG" />
             <origin xyz="${hip_to_upper_leg_xyz}" rpy="${hip_to_upper_leg_rpy}" />
-            <axis xyz="0 -1 0" />
+            <axis xyz="${axis}" />
             <limit effort="2.7" lower="-${PI}" upper="${PI}" velocity="1000" />
             <!-- <dynamics damping="0.7" friction="100.0" /> -->
         </joint>
@@ -353,18 +357,22 @@
         <!-- Transformation based on the position of each link -->
         <xacro:if value="${prefix == 'LF'}">
             <xacro:property name="upper_to_lower_leg_xyz" value="${HFE_2_KFE_x} ${HFE_2_KFE_y} 0" />
+            <xacro:property name="axis" value="0 1 0" />
         </xacro:if>
         <xacro:if
             value="${prefix == 'LH'}">
             <xacro:property name="upper_to_lower_leg_xyz" value="${-HFE_2_KFE_x} ${HFE_2_KFE_y} 0" />
+            <xacro:property name="axis" value="0 1 0" />
         </xacro:if>
         <xacro:if
             value="${prefix == 'RF'}">
             <xacro:property name="upper_to_lower_leg_xyz" value="${HFE_2_KFE_x} ${-HFE_2_KFE_y} 0" />
+            <xacro:property name="axis" value="0 -1 0" />
         </xacro:if>
         <xacro:if
             value="${prefix == 'RH'}">
             <xacro:property name="upper_to_lower_leg_xyz" value="${-HFE_2_KFE_x} ${-HFE_2_KFE_y} 0" />
+            <xacro:property name="axis" value="0 -1 0" />
         </xacro:if>
         <xacro:property name="upper_to_lower_leg_rpy" value="0 0 0" />
 
@@ -373,7 +381,7 @@
             <parent link="${jnt_pref}${prefix}_UPPER_LEG" />
             <child link="${jnt_pref}${prefix}_LOWER_LEG" />
             <origin xyz="${upper_to_lower_leg_xyz}" rpy="${upper_to_lower_leg_rpy}" />
-            <axis xyz="0 -1 0" />
+            <axis xyz="${axis}" />
             <limit effort="2.7" lower="-${PI}" upper="${PI}" velocity="1000" />
             <!-- <dynamics damping="0.7" friction="100.0" /> -->
         </joint>
