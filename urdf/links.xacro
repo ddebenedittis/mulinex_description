@@ -353,7 +353,7 @@
     </xacro:macro>
 
     <!-- LOWER LEG -->
-    <xacro:macro name="lower_leg" params="prefix gazebo jnt_pref simplify_meshes">
+    <xacro:macro name="lower_leg" params="prefix gazebo jnt_pref simplify_meshes wheels">
         <!-- Transformation based on the position of each link -->
         <xacro:if value="${prefix == 'LF'}">
             <xacro:property name="upper_to_lower_leg_xyz" value="${HFE_2_KFE_x} ${HFE_2_KFE_y} 0" />
@@ -432,7 +432,7 @@
                     <xacro:if value="${prefix == 'RF'}">
                         <origin xyz="0 0 0" rpy="0 ${-PI/2} 0" />
                         <geometry>
-                            <mesh filename="${mulinex_lower_leg_right}" />
+                            <mesh filename="${msphereulinex_lower_leg_right}" />
                         </geometry>
                     </xacro:if>
                     <xacro:if value="${prefix == 'RH'}">
@@ -530,70 +530,174 @@
                 </collision>
             </gazebo>
         </xacro:if>
+        <!-- Include wheels -->
+        <xacro:if value="${wheels}">
+            <joint name="${prefix}_ANKLE" type="continuous">
+                <parent link="${prefix}_LOWER_LEG" />
+                <child link="${prefix}_WHEEL" />
+                <xacro:if value="${prefix == 'LF'}">
+                    <origin xyz="${KFE_2_FOOT_x} ${KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                    <axis xyz="0 1 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'LH'}">
+                    <origin xyz="${-KFE_2_FOOT_x} ${KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                    <axis xyz="0 1 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'RF'}">
+                    <origin xyz="${KFE_2_FOOT_x} ${-KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                    <axis xyz="0 1 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'RH'}">
+                    <origin xyz="${-KFE_2_FOOT_x} ${-KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                    <axis xyz="0 1 0" />
+                </xacro:if>
+            </joint>
 
-        <joint name="${prefix}_ANKLE" type="fixed">
-            <parent link="${prefix}_LOWER_LEG" />
-            <child link="${prefix}_FOOT" />
-
-            <xacro:if value="${prefix == 'LF'}">
-                <origin xyz="${KFE_2_FOOT_x} ${KFE_2_FOOT_y} 0" rpy="0 0 0" />
-            </xacro:if>
-            <xacro:if value="${prefix == 'LH'}">
-                <origin xyz="${-KFE_2_FOOT_x} ${KFE_2_FOOT_y} 0" rpy="0 0 0" />
-            </xacro:if>
-            <xacro:if value="${prefix == 'RF'}">
-                <origin xyz="${KFE_2_FOOT_x} ${-KFE_2_FOOT_y} 0" rpy="0 0 0" />
-            </xacro:if>
-            <xacro:if value="${prefix == 'RH'}">
-                <origin xyz="${-KFE_2_FOOT_x} ${-KFE_2_FOOT_y} 0" rpy="0 0 0" />
-            </xacro:if>
-
-
-        </joint>
-
-        <link name="${prefix}_FOOT">
-            <xacro:if value="${simplify_meshes}">
-                <collision>
-                    <origin xyz="0 0 0" rpy="0 0 0" />
+            <link name="${prefix}_WHEEL">
+                <visual>
+                    <material name="white" />
+                    <origin xyz="0 0 0" rpy="${PI/2} 0 0" />
                     <geometry>
-                        <sphere radius="0.015" />
+                        <cylinder length="0.10" radius="0.015" />
                     </geometry>
-                </collision>
-            </xacro:if>
-        </link>
-        <xacro:if value="${gazebo}">
-            <gazebo reference="${prefix}_FOOT">
-                <material>Gazebo/White</material>
-                <collision>
-                    <surface>
-                        <friction>
-                            <ode>
-                                <mu>0.6</mu>
-                                <mu2>0.6</mu2>
-                                <slip1>0</slip1>
-                                <slip2>0</slip2>
-                            </ode>
-                        </friction>
+                </visual>
+                <xacro:if value="${simplify_meshes}">
+                    <collision>
+                        <origin xyz="0 0 0" rpy="${PI/2} 0 0" />
+                        <geometry>
+                            <cylinder length="0.10" radius="0.015" />
+                        </geometry>
+                    </collision>
+                </xacro:if>
+            </link>
+            <xacro:if value="${gazebo}">
+                <gazebo reference="${prefix}_WHEEL">
+                    <material>Gazebo/White</material>
+                    <collision>
+                        <surface>
+                            <friction>
+                                <ode>
+                                    <mu>0.6</mu>
+                                    <mu2>0.6</mu2>
+                                    <slip1>0</slip1>
+                                    <slip2>0</slip2>
+                                </ode>
+                            </friction>
+                            <contact>
+                                <ode>
+                                    <kp>10000.0</kp>
+                                    <kd>100.0</kd>
+                                    <min_depth>0.001</min_depth>
+                                </ode>
+                            </contact>
+                        </surface>
+                    </collision>
+                    <sensor name="${prefix}_contactsensor_sensor" type="contact">
+                        <always_on>true</always_on>
+                        <update_rate>50</update_rate>
                         <contact>
-                            <ode>
-                                <kp>10000.0</kp>
-                                <kd>100.0</kd>
-                                <min_depth>0.001</min_depth>
-                            </ode>
+                            <collision>
+                                ${prefix}_LOWER_LEG_fixed_joint_lump__${prefix}_FOOT_collision_1</collision>
                         </contact>
-                    </surface>
-                </collision>
-                <sensor name="${prefix}_contactsensor_sensor" type="contact">
-                    <always_on>true</always_on>
-                    <update_rate>50</update_rate>
-                    <contact>
-                        <collision>${prefix}_LOWER_LEG_fixed_joint_lump__${prefix}_FOOT_collision_1</collision>
 
-                    </contact>
+                    </sensor>
+                </gazebo>
+            </xacro:if>
 
-                </sensor>
-            </gazebo>
+            <joint name="${prefix}_DIRECTION" type="fixed">
+                <parent link="${prefix}_WHEEL" />
+                <child link="${prefix}_INDICATOR" />
+                <xacro:if value="${prefix == 'LF'}">
+                    <origin xyz="0 0.0501 0" rpy="0 0 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'LH'}">
+                    <origin xyz="0 0.0501 0" rpy="0 0 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'RF'}">
+                    <origin xyz="0 -0.0501 0" rpy="0 0 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'RH'}">
+                    <origin xyz="0 -0.0501 0" rpy="0 0 0" />
+                </xacro:if>
+            </joint>
+
+            <link name="${prefix}_INDICATOR">
+                <visual>
+                    <origin xyz="0 0 0.0075" rpy="0 0 0" />
+                    <geometry>
+                        <box size="0.004 0.0001 0.015" />
+                    </geometry>
+                    <material name="red" />
+                </visual>
+            </link>
         </xacro:if>
+        <!-- Without wheels -->
+        <xacro:unless value="${wheels}">
+            <joint name="${prefix}_ANKLE" type="fixed">
+                <parent link="${prefix}_LOWER_LEG" />
+                <child link="${prefix}_FOOT" />
+
+                <xacro:if value="${prefix == 'LF'}">
+                    <origin xyz="${KFE_2_FOOT_x} ${KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'LH'}">
+                    <origin xyz="${-KFE_2_FOOT_x} ${KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'RF'}">
+                    <origin xyz="${KFE_2_FOOT_x} ${-KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                </xacro:if>
+                <xacro:if value="${prefix == 'RH'}">
+                    <origin xyz="${-KFE_2_FOOT_x} ${-KFE_2_FOOT_y} 0" rpy="0 0 0" />
+                </xacro:if>
+
+
+            </joint>
+
+            <link name="${prefix}_FOOT">
+                <xacro:if value="${simplify_meshes}">
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <sphere radius="0.015" />
+                        </geometry>
+                    </collision>
+                </xacro:if>
+            </link>
+            <xacro:if value="${gazebo}">
+                <gazebo reference="${prefix}_FOOT">
+                    <material>Gazebo/White</material>
+                    <collision>
+                        <surface>
+                            <friction>
+                                <ode>
+                                    <mu>0.6</mu>
+                                    <mu2>0.6</mu2>
+                                    <slip1>0</slip1>
+                                    <slip2>0</slip2>
+                                </ode>
+                            </friction>
+                            <contact>
+                                <ode>
+                                    <kp>10000.0</kp>
+                                    <kd>100.0</kd>
+                                    <min_depth>0.001</min_depth>
+                                </ode>
+                            </contact>
+                        </surface>
+                    </collision>
+                    <sensor name="${prefix}_contactsensor_sensor" type="contact">
+                        <always_on>true</always_on>
+                        <update_rate>50</update_rate>
+                        <contact>
+                            <collision>
+                                ${prefix}_LOWER_LEG_fixed_joint_lump__${prefix}_FOOT_collision_1</collision>
+
+                        </contact>
+
+                    </sensor>
+                </gazebo>
+            </xacro:if>
+        </xacro:unless>
     </xacro:macro>
 
 </robot>

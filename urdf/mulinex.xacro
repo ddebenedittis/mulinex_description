@@ -7,6 +7,7 @@
    
     <xacro:property name="use_gazebo" value="true" />
     <xacro:property name="simplify_meshes_lower_leg" value="true"/>
+    <xacro:property name="add_wheels" value="false"/>
     <xacro:property name="jnt_prefix" value="" />
     <xacro:property name="hind_haa" value="0.0" />
     <xacro:property name="hind_hfe" value="0.0" />
@@ -43,22 +44,27 @@
         prefix="LH"
         gazebo="${use_gazebo}"
         jnt_pref="${jnt_prefix}"
-        simplify_meshes="${simplify_meshes_lower_leg}" />
+        simplify_meshes="${simplify_meshes_lower_leg}" 
+        wheels="${add_wheels}" />
     <xacro:leg
         prefix="LF"
         gazebo="${use_gazebo}"
         jnt_pref="${jnt_prefix}"
-        simplify_meshes="${simplify_meshes_lower_leg}" />
+        simplify_meshes="${simplify_meshes_lower_leg}"
+        wheels="${add_wheels}" />
     <xacro:leg
         prefix="RF"
         gazebo="${use_gazebo}"
         jnt_pref="${jnt_prefix}"
-        simplify_meshes="${simplify_meshes_lower_leg}" />
+        simplify_meshes="${simplify_meshes_lower_leg}"
+        wheels="${add_wheels}" />
     <xacro:leg
         prefix="RH"
         gazebo="${use_gazebo}"
         jnt_pref="${jnt_prefix}"
-        simplify_meshes="${simplify_meshes_lower_leg}" />
+        simplify_meshes="${simplify_meshes_lower_leg}"
+        wheels="${add_wheels}" />
+
     <xacro:if value="${use_gazebo}">
         <gazebo reference="base_link">
             <material>Gazebo/White</material>

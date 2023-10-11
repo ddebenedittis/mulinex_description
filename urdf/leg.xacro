@@ -3,7 +3,7 @@
     <xacro:include filename="$(find mulinex_description)/urdf/links.xacro" />
     <xacro:property name="PI" value="3.141592" />
 
-    <xacro:macro name="leg" params="prefix gazebo jnt_pref simplify_meshes">
+    <xacro:macro name="leg" params="prefix gazebo jnt_pref simplify_meshes wheels">
         <!-- Module 1 -->
         <xacro:hip
             prefix="${prefix}"
@@ -20,7 +20,8 @@
             prefix="${prefix}"
             gazebo="${gazebo}"
             jnt_pref="${jnt_pref}"
-            simplify_meshes="${simplify_meshes}" />
+            simplify_meshes="${simplify_meshes}"
+            wheels="${wheels}" />
     </xacro:macro>
 
 </robot>
